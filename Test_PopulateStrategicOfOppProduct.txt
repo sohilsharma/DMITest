@@ -1,0 +1,90 @@
+@isTest (SeeAllData=false)
+private class Test_PopulateStrategicOfOppProduct
+{
+
+	static testMethod void testing_PopulateStrategicOfOppProduct()
+
+		{ 
+		Set <opportunity> newopp = new set<opportunity>();
+		List<account> accounts = new List<account>();
+		Set<OpportunityLineItem> opplineitem = new set<>(OpportunityLineItem);
+		
+		
+		Decimal dSumOfTotalPrice = 0.0;
+		
+		Profile p = [select id from profile where name='Standard User'];
+		
+		 User u = new User(alias = 'BLee', email='billy.lee=imagenow.com@example.com',
+            emailencodingkey='UTF-8', lastname='Testing', languagelocalekey='en_US',
+            localesidkey='en_US', profileid = p.Id, country='United States',
+            timezonesidkey='America/Los_Angeles', username='test1234@yahoo.com');
+        
+		
+		insert u;
+			system.runAs(u)
+				{		
+					for (Integer i=0;i<200;i++)	
+						{	
+						Test.startTest(); 
+						
+						RecordType rt1 = [SELECT id,Name 
+								 FROM RecordType 
+								 WHERE SobjectType='Account' AND Name='Location Customer'];
+								 
+						
+							Account acc = new account();
+							acc.name = 'SohilAccount';
+							acc.CurrencyIsoCode = 'USD';
+							acc.LX_Country_Code__c = 'MX';
+							acc.Physical_Country__c = 'Mexico';
+							acc.LXK_Region__c = 'Mexico';
+							acc.LX_Geo__c = 'Latin America';
+							acc.PSW_Sales_Region__c = 'LA';
+							acc.recordTypeId=rt1.id
+							
+							accounts.add(acc);
+							
+							insert accounts;
+						
+							
+							OpportunityLineItem Opline = New OpportunityLineItem();
+							Opline.Name='SohilOpline';
+							Opline.Sales_Price_SAP__c = 1000;
+							Opline.Quantity = 3;
+							Opline.TotalPrice = 500;
+							opplineitem.add(Opline);
+							
+							insert opplineitem;
+							
+							RecordType rt = [SELECT id,Name 
+								 FROM RecordType 
+								 WHERE SobjectType='opportunity' AND Name='Channel Opportunity'];
+							
+							opportunity obj = new opportunity();
+							obj.accountid  = acc.id;
+							obj.name = 'SOHIL';
+							obj.CloseDate = 2015-05-05;
+							obj.CurrencyIsoCode = 'USD';
+							obj.amount=50000;
+							obj.StageName = 'Qualifying';
+							obj.ForecastCategoryName = 'Omitted';
+							obj.Sector__c ='Banking';
+							obj.Next_Steps__c ='Testing DMI Noida';
+							obj.recordTypeId=rt.id
+							obj.Strategic_Booking_Amount__c = 500;
+							newopp.add(obj);
+							
+							system.assertEquals(obj.accountid,acc.id;);
+							
+							system.assertEquals(obj.Strategic_Booking_Amount__c,acc.TotalPrice);
+							
+							Test.stopTest();
+							//System.assert(checkRecursive.runOnce(), 'Recursion check failed. Please review checkRecursive recursion logic');
+						}	
+						
+						
+				}
+					
+		} 
+		
+}
