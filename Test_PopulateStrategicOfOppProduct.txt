@@ -1,7 +1,7 @@
 @isTest (SeeAllData=false)
 private class Test_PopulateStrategicOfOppProduct
 {
-
+// Test Sohil For GIT
 	static testMethod void testing_PopulateStrategicOfOppProduct()
 
 		{ 
